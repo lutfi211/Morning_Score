@@ -13,13 +13,13 @@ const dailyMorningTask = 'morning_skor_daily_0600';
 
 class BackgroundService {
   static Future<void> initialize() async {
-    await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+    await Workmanager().initialize(callbackDispatcher);
     await Workmanager().registerPeriodicTask(
       backgroundSyncTask,
       backgroundSyncTask,
       frequency: const Duration(hours: 6),
       constraints: Constraints(networkType: NetworkType.connected),
-      existingWorkPolicy: ExistingWorkPolicy.keep,
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );
     await _registerNextDailyTask();
   }
