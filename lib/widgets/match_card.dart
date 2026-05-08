@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/match.dart';
 import '../utils/constants.dart';
 import '../utils/date_utils.dart' as app_dates;
+import 'badge_icon.dart';
 
 class MatchCard extends StatelessWidget {
   const MatchCard({super.key, required this.match});
@@ -31,6 +32,12 @@ class MatchCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
+                BadgeIcon(
+                  assetPath: teamIconAssets[match.homeTeam],
+                  fallbackText: match.homeTeam,
+                  size: 34,
+                ),
+                const SizedBox(width: 10),
                 Expanded(child: Text(match.homeTeam, style: Theme.of(context).textTheme.titleMedium)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -48,6 +55,12 @@ class MatchCard extends StatelessWidget {
                     textAlign: TextAlign.end,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
+                ),
+                const SizedBox(width: 10),
+                BadgeIcon(
+                  assetPath: teamIconAssets[match.awayTeam],
+                  fallbackText: match.awayTeam,
+                  size: 34,
                 ),
               ],
             ),

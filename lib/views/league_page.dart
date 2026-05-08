@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/favorites_provider.dart';
 import '../utils/constants.dart';
+import '../widgets/badge_icon.dart';
 
 class LeaguePage extends StatelessWidget {
   const LeaguePage({super.key});
@@ -16,7 +17,17 @@ class LeaguePage extends StatelessWidget {
           title: const Text('Leagues'),
           bottom: TabBar(
             isScrollable: true,
-            tabs: [for (final league in leagues) Tab(text: league.name)],
+            tabs: [
+              for (final league in leagues)
+                Tab(
+                  icon: BadgeIcon(
+                    assetPath: leagueIconAssets[league.name],
+                    fallbackText: league.name,
+                    size: 24,
+                  ),
+                  text: league.name,
+                ),
+            ],
           ),
         ),
         body: TabBarView(
@@ -36,7 +47,11 @@ class LeaguePage extends StatelessWidget {
                       value: selected,
                       title: Text(team.name),
                       subtitle: Text(league.name),
-                      secondary: const Icon(Icons.shield_outlined),
+                      secondary: BadgeIcon(
+                        assetPath: teamIconAssets[team.name],
+                        fallbackText: team.name,
+                        size: 42,
+                      ),
                       onChanged: (_) async {
                         final ok = await context
                             .read<FavoritesProvider>()
