@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/settings_provider.dart';
 import '../services/storage_service.dart';
 import '../utils/constants.dart';
 import '../utils/date_utils.dart' as app_dates;
@@ -30,8 +32,10 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<SettingsProvider>().strings;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications')),
+      appBar: AppBar(title: Text(strings.notifications)),
       body: FutureBuilder<List<NotificationItem>>(
         future: _future,
         builder: (context, snapshot) {
@@ -41,7 +45,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
           final items = snapshot.data ?? const <NotificationItem>[];
           if (items.isEmpty) {
-            return const Center(child: Text('Inbox masih kosong.'));
+            return Center(child: Text(strings.emptyInbox));
           }
 
           return RefreshIndicator(
@@ -52,7 +56,7 @@ class _NotificationPageState extends State<NotificationPage> {
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final item = items[index];
-                final groupedMatches = _groupedMatches(item);
+                final groupedMatches = _groupedMatches(item, strings.scoreDigest);
 
                 return Card(
                   child: Padding(
@@ -84,11 +88,11 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  Map<String, List<String>> _groupedMatches(NotificationItem item) {
+  Map<String, List<String>> _groupedMatches(NotificationItem item, String fallbackTitle) {
     if (item.matchesByLeague.isNotEmpty) return item.matchesByLeague;
     if (item.matches.isEmpty) return const {};
 
-    return {'Score Digest': item.matches};
+    return {fallbackTitle: item.matches};
   }
 
   List<String> _orderedLeagues(Map<String, List<String>> matchesByLeague) {

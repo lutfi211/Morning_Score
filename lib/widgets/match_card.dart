@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/match.dart';
+import '../providers/settings_provider.dart';
 import '../utils/constants.dart';
 import '../utils/date_utils.dart' as app_dates;
 import 'badge_icon.dart';
@@ -15,6 +17,7 @@ class MatchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeUrl = teamYouTubeChannels[match.homeTeam];
     final awayUrl = teamYouTubeChannels[match.awayTeam];
+    final strings = context.watch<SettingsProvider>().strings;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
@@ -77,9 +80,9 @@ class MatchCard extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: _HighlightButton(label: 'Home Highlight', url: homeUrl)),
+                Expanded(child: _HighlightButton(label: strings.homeHighlight, url: homeUrl)),
                 const SizedBox(width: 12),
-                Expanded(child: _HighlightButton(label: 'Away Highlight', url: awayUrl)),
+                Expanded(child: _HighlightButton(label: strings.awayHighlight, url: awayUrl)),
               ],
             ),
           ],

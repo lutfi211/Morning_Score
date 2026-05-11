@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/favorites_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/constants.dart';
 import '../widgets/badge_icon.dart';
 
@@ -10,11 +11,13 @@ class LeaguePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<SettingsProvider>().strings;
+
     return DefaultTabController(
       length: leagues.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Leagues'),
+          title: Text(strings.leagues),
           bottom: TabBar(
             isScrollable: true,
             tabs: [
@@ -58,7 +61,7 @@ class LeaguePage extends StatelessWidget {
                             .toggleFavorite(league.name, team.name);
                         if (!ok && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Maksimal 6 tim per liga.')),
+                            SnackBar(content: Text(strings.maxTeamsPerLeague)),
                           );
                         }
                       },

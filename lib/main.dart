@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 import 'providers/favorites_provider.dart';
 import 'providers/matches_provider.dart';
+import 'providers/settings_provider.dart';
 import 'services/api_service.dart';
 import 'services/background_service.dart';
 import 'services/notification_service.dart';
@@ -23,7 +24,9 @@ Future<void> main() async {
   }
 
   final favoritesProvider = FavoritesProvider(storageService);
+  final settingsProvider = SettingsProvider(storageService);
   await favoritesProvider.loadFavorites();
+  await settingsProvider.loadSettings();
 
   runApp(
     MultiProvider(
@@ -32,6 +35,7 @@ Future<void> main() async {
         Provider.value(value: apiService),
         Provider.value(value: notificationService),
         ChangeNotifierProvider.value(value: favoritesProvider),
+        ChangeNotifierProvider.value(value: settingsProvider),
         ChangeNotifierProvider(
           create: (_) => MatchesProvider(apiService, favoritesProvider),
         ),

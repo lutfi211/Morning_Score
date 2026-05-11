@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/favorites_provider.dart';
 import '../providers/matches_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/constants.dart';
 import '../widgets/league_section.dart';
 
@@ -27,9 +28,9 @@ class _HomePageState extends State<HomePage> {
     await context.read<MatchesProvider>().fetchMatchesForFavorites();
     if (!mounted) return;
 
-    final error = context.read<MatchesProvider>().error;
-    if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+    if (context.read<MatchesProvider>().hasError) {
+      final strings = context.read<SettingsProvider>().strings;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(strings.loadScoresFailed)));
     }
   }
 
@@ -37,13 +38,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final hasFavorites = context.watch<FavoritesProvider>().hasAnyFavorites();
     final matchesProvider = context.watch<MatchesProvider>();
+    final strings = context.watch<SettingsProvider>().strings;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Morning Skor'),
+        title: Text(strings.appName),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: strings.refresh,
             onPressed: matchesProvider.isLoading ? null : _fetch,
             icon: const Icon(Icons.refresh),
           ),
@@ -65,9 +67,9 @@ class _HomePageState extends State<HomePage> {
                             matches: matchesProvider.matchesByLeague[league] ?? const [],
                           ),
                         if (matchesProvider.matchesByLeague.values.every((items) => items.isEmpty))
-                          const Padding(
-                            padding: EdgeInsets.only(top: 160),
-                            child: Center(child: Text('Belum ada hasil terbaru.')),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 160),
+                            child: Center(child: Text(strings.noLatestScores)),
                           ),
                       ],
                     ),
@@ -81,13 +83,15 @@ class _EmptyFavorites extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final strings = context.watch<SettingsProvider>().strings;
+
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Text(
-          'Pilih tim favorit dulu ⚽',
+          strings.chooseFavorites,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
       ),
     );

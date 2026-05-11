@@ -19,6 +19,7 @@ class MatchesProvider extends ChangeNotifier {
   Map<String, List<Match>> get matchesByLeague => Map.unmodifiable(_matchesByLeague);
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get hasError => _error != null;
 
   Future<void> fetchMatchesForFavorites() async {
     _isLoading = true;
@@ -48,7 +49,7 @@ class MatchesProvider extends ChangeNotifier {
 
       _matchesByLeague = next;
     } catch (_) {
-      _error = 'Gagal memuat skor. Coba lagi nanti.';
+      _error = 'loadScoresFailed';
     } finally {
       _isLoading = false;
       notifyListeners();
