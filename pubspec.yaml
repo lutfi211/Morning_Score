@@ -26,5 +26,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/icons/app/
     - assets/icons/clubs/
     - assets/icons/leagues/

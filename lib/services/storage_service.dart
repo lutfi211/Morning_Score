@@ -5,22 +5,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NotificationItem {
   const NotificationItem({
     required this.date,
-    required this.matches,
+    this.matches = const [],
+    this.matchesByLeague = const {},
   });
 
   final DateTime date;
   final List<String> matches;
+  final Map<String, List<String>> matchesByLeague;
 
   Map<String, dynamic> toJson() => {
         'date': date.toIso8601String(),
         'matches': matches,
+        'matchesByLeague': matchesByLeague,
       };
 
   factory NotificationItem.fromJson(Map<String, dynamic> json) {
     final rawMatches = json['matches'];
+    final rawMatchesByLeague = json['matchesByLeague'];
     return NotificationItem(
       date: DateTime.tryParse('${json['date']}') ?? DateTime.now(),
       matches: rawMatches is List ? rawMatches.map((e) => '$e').toList() : const [],
+      matchesByLeague: rawMatchesByLeague is Map
+          ? rawMatchesByLeague.map((league, matches) {
+              final value = matches is List ? matches.map((e) => '$e').toList() : <String>[];
+              return MapEntry('$league', value);
+            })
+          : const {},
     );
   }
 }

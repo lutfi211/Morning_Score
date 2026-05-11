@@ -44,16 +44,20 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    final lines = await _fetchNotificationLines();
-    if (lines.isNotEmpty) {
+    final matchesByLeague = await _fetchNotificationLinesByLeague();
+    if (matchesByLeague.isNotEmpty) {
       final storage = StorageService();
       await storage.addNotificationItem(
-        NotificationItem(date: DateTime.now(), matches: lines),
+        NotificationItem(
+          date: DateTime.now(),
+          matchesByLeague: matchesByLeague,
+          matches: matchesByLeague.values.expand((matches) => matches).toList(),
+        ),
       );
 
       final notificationService = NotificationService();
       await notificationService.initialize();
-      await notificationService.showMorningNotification(lines);
+      await notificationService.showMorningNotifications(matchesByLeague);
     }
 
     if (task == dailyMorningTask) {
@@ -64,25 +68,32 @@ void callbackDispatcher() {
   });
 }
 
-Future<List<String>> _fetchNotificationLines() async {
+Future<Map<String, List<String>>> _fetchNotificationLinesByLeague() async {
   final storage = StorageService();
   final favorites = await storage.getFavorites();
   final api = ApiService();
   final seen = <String>{};
-  final lines = <String>[];
+  final matchesByLeague = <String, List<String>>{};
 
   for (final entry in curatedTeamsByLeague.entries) {
-    final teams = _teamsForLeague(entry.key, favorites[entry.key]);
+    final league = entry.key;
+    final teams = _teamsForLeague(league, favorites[league]);
+    final leagueLines = <String>[];
+
     for (final team in teams) {
       final match = await api.getLastMatch(team.teamId);
       if (match == null || match.homeScore == null || match.awayScore == null) continue;
 
       final key = _matchKey(match);
-      if (seen.add(key)) lines.add(match.notificationLine());
+      if (seen.add(key)) leagueLines.add(match.notificationLine());
+    }
+
+    if (leagueLines.isNotEmpty) {
+      matchesByLeague[league] = leagueLines;
     }
   }
 
-  return lines;
+  return matchesByLeague;
 }
 
 List<Team> _teamsForLeague(String league, List<String>? favoriteNames) {

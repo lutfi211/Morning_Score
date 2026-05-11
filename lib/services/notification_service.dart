@@ -12,15 +12,27 @@ class NotificationService {
         ?.requestNotificationsPermission();
   }
 
-  Future<void> showMorningNotification(List<String> lines) async {
+  Future<void> showMorningNotifications(Map<String, List<String>> matchesByLeague) async {
+    var offset = 0;
+    for (final entry in matchesByLeague.entries) {
+      await showMorningNotification(entry.key, entry.value, idOffset: offset);
+      offset++;
+    }
+  }
+
+  Future<void> showMorningNotification(
+    String league,
+    List<String> lines, {
+    int idOffset = 0,
+  }) async {
     if (lines.isEmpty) return;
 
-    final body = lines.take(8).join('\n');
+    final body = lines.take(5).join('\n');
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
         'morning_skor_daily',
         'Morning Skor Daily',
-        channelDescription: 'Daily football score digest',
+        channelDescription: 'Daily football score digest by league',
         importance: Importance.high,
         priority: Priority.high,
         styleInformation: BigTextStyleInformation(body),
@@ -28,8 +40,8 @@ class NotificationService {
     );
 
     await _plugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      '⚽ Morning Skor',
+      (DateTime.now().millisecondsSinceEpoch ~/ 1000) + idOffset,
+      'Morning Skor - $league',
       body,
       details,
     );

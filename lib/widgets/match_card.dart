@@ -17,9 +17,9 @@ class MatchCard extends StatelessWidget {
     final awayUrl = teamYouTubeChannels[match.awayTeam];
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 14),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -29,8 +29,9 @@ class MatchCard extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 BadgeIcon(
                   assetPath: teamIconAssets[match.homeTeam],
@@ -38,9 +39,16 @@ class MatchCard extends StatelessWidget {
                   size: 34,
                 ),
                 const SizedBox(width: 10),
-                Expanded(child: Text(match.homeTeam, style: Theme.of(context).textTheme.titleMedium)),
+                Expanded(
+                  child: Text(
+                    match.homeTeam,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
                     match.scoreText(),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -53,6 +61,8 @@ class MatchCard extends StatelessWidget {
                   child: Text(
                     match.awayTeam,
                     textAlign: TextAlign.end,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -64,13 +74,12 @@ class MatchCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
+            const SizedBox(height: 16),
+            Row(
               children: [
-                _HighlightButton(label: 'Highlights Home', url: homeUrl),
-                _HighlightButton(label: 'Highlights Away', url: awayUrl),
+                Expanded(child: _HighlightButton(label: 'Home', url: homeUrl)),
+                const SizedBox(width: 12),
+                Expanded(child: _HighlightButton(label: 'Away', url: awayUrl)),
               ],
             ),
           ],
@@ -88,10 +97,17 @@ class _HighlightButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.tonalIcon(
-      onPressed: url == null ? null : () => launchUrl(Uri.parse(url!), mode: LaunchMode.externalApplication),
-      icon: const Icon(Icons.play_circle_outline),
-      label: Text(label),
+    return SizedBox(
+      height: 44,
+      child: FilledButton.tonalIcon(
+        onPressed: url == null ? null : () => launchUrl(Uri.parse(url!), mode: LaunchMode.externalApplication),
+        icon: const Icon(Icons.play_circle_outline, size: 18),
+        label: Text(
+          'Highlights $label',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
     );
   }
 }
