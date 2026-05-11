@@ -52,6 +52,8 @@ class _NotificationPageState extends State<NotificationPage> {
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final item = items[index];
+                final groupedMatches = _groupedMatches(item);
+
                 return Card(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
@@ -65,18 +67,11 @@ class _NotificationPageState extends State<NotificationPage> {
                               ),
                         ),
                         const SizedBox(height: 14),
-                        if (item.matchesByLeague.isNotEmpty)
-                          for (final league in _orderedLeagues(item.matchesByLeague))
-                            _InboxLeagueGroup(
-                              league: league,
-                              matches: item.matchesByLeague[league] ?? const [],
-                            )
-                        else
-                          for (final match in item.matches)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
-                              child: Text(match),
-                            ),
+                        for (final league in _orderedLeagues(groupedMatches))
+                          _InboxLeagueGroup(
+                            league: league,
+                            matches: groupedMatches[league] ?? const [],
+                          ),
                       ],
                     ),
                   ),
@@ -87,6 +82,13 @@ class _NotificationPageState extends State<NotificationPage> {
         },
       ),
     );
+  }
+
+  Map<String, List<String>> _groupedMatches(NotificationItem item) {
+    if (item.matchesByLeague.isNotEmpty) return item.matchesByLeague;
+    if (item.matches.isEmpty) return const {};
+
+    return {'Score Digest': item.matches};
   }
 
   List<String> _orderedLeagues(Map<String, List<String>> matchesByLeague) {

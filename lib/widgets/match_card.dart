@@ -77,9 +77,9 @@ class MatchCard extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: _HighlightButton(label: 'Home', url: homeUrl)),
+                Expanded(child: _HighlightButton(label: 'Home Highlight', url: homeUrl)),
                 const SizedBox(width: 12),
-                Expanded(child: _HighlightButton(label: 'Away', url: awayUrl)),
+                Expanded(child: _HighlightButton(label: 'Away Highlight', url: awayUrl)),
               ],
             ),
           ],
@@ -103,9 +103,11 @@ class _HighlightButton extends StatelessWidget {
         onPressed: url == null ? null : () => launchUrl(Uri.parse(url!), mode: LaunchMode.externalApplication),
         icon: const Icon(Icons.play_circle_outline, size: 18),
         label: Text(
-          'Highlights $label',
+          label,
+          textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
         ),
       ),
     );
