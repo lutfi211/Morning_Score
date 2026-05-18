@@ -1,4 +1,4 @@
-package com.example.morning_skor
+package com.morningskor.app
 
 import io.flutter.embedding.android.FlutterActivity
 
