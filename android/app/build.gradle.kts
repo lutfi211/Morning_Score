@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.morningskor.app"
+    namespace = "com.ti24a4.app28"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
