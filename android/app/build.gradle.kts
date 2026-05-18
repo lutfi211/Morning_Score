@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.ti24a4.app28"
+    namespace = "com.morningskor.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.morningskor.app"
+        applicationId = "com.ti24a4.app28"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
